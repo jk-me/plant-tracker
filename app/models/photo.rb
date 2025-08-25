@@ -1,4 +1,4 @@
-class Picture < ApplicationRecord
+class Photo < ApplicationRecord
   belongs_to :plant
   belongs_to :blooming, optional: true
 

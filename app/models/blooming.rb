@@ -1,6 +1,6 @@
 class Blooming < ApplicationRecord
   belongs_to :plant
-  has_many :pictures, dependent: :destroy
+  has_many :photos, dependent: :destroy
 
-  validates :flowers_fully_open_date, presence: true
+  validates :in_full_bloom_date, presence: true
 end

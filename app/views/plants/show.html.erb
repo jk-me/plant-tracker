@@ -1,0 +1,6 @@
+<turbo-frame id="<%= dom_id(@plant) %>">
+  <h1><%= @plant.name %></h1>
+  <p>Date Acquired: <%= @plant.date_acquired %></p>
+  <%= link_to "Edit", edit_plant_path(@plant), data: { turbo_frame: "main-content" } %>
+  <%= link_to "Back", plants_path, data: { turbo_frame: "main-content" } %>
+</turbo-frame>

@@ -1,0 +1,14 @@
+<h1>My Plants</h1>
+
+<%= turbo_frame_tag "plants" do %>
+  <ul>
+    <% @plants.each do |plant| %>
+      <li id="<%= dom_id(plant) %>">
+        <%= link_to plant.name, plant_path(plant), data: { turbo_frame: "_top" } %>
+        <%= link_to "Delete", plant_path(plant), method: :delete, data: { turbo_confirm: "Are you sure?" } %>
+      </li>
+    <% end %>
+  </ul>
+<% end %>
+
+<%= link_to "New Plant", new_plant_path, data: { turbo_frame: "main-content" } %>

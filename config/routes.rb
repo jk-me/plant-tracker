@@ -13,4 +13,5 @@ Rails.application.routes.draw do
   root "welcome#index"
 
   post "/login", to: "sessions#create"
+  get "/signup", to: "users#new"
 end

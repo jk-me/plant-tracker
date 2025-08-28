@@ -13,6 +13,7 @@ Rails.application.routes.draw do
   root "welcome#index"
 
   resource :session, only: %i[ create destroy ]
+  resources :users, only: %i[ new create ]
   resources :passwords, param: :token
   get "/login", to: "sessions#new"
   post "/login", to: "sessions#create"

@@ -10,7 +10,7 @@ class UsersController < ApplicationController
       start_new_session_for user
       redirect_to after_authentication_url
     else
-      render :new, status: :unprocessable_entity
+      render :new, status: :unprocessable_entity, alert: "Something went wrong."
     end
   end
 

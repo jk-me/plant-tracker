@@ -1,0 +1,9 @@
+<h1 class="signup-title">
+  Sign Up
+</h1>
+
+<div class="form-container">
+  <div class="form-box">
+    <%= render partial: "shared/form", locals: { form_url: users_path, form_method: :post, submit_label: "Sign Up" } %>
+  </div>
+</div>

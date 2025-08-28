@@ -1,0 +1,15 @@
+<header class="site-header">
+  <nav class="navbar">
+    <div class="navbar-brand">
+      <%= link_to "Plant Tracker", root_path, class: "navbar-item" %>
+    </div>
+    <div class="navbar-menu">
+      <ul class="navbar-links">
+        <li><%= link_to "Home", root_path %></li>
+        <li><%= link_to "My Plants", plants_path %></li>
+        <li><%= link_to "Add Plant", new_plant_path %></li>
+
+      </ul>
+    </div>
+  </nav>
+</header>

@@ -92,7 +92,7 @@ jobs:
       - name: Run tests
         env:
           RAILS_ENV: test
-          DATABASE_URL: postgres://postgres:password@localhost:5432/test_db
+          DATABASE_URL: postgres://postgres:password@localhost:5432/plant_test
         run: bin/rails test test:system
 
       - name: Keep screenshots from failed system tests

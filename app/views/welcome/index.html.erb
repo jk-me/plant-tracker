@@ -1,10 +1,9 @@
 <h1 class="welcome-title">
   Welcome to Plant Tracker
 </h1>
+<%= link_to "Logout", session_path, data: { "turbo-method": :delete }, class: "logout-link" %>
 
-<div class="form-container">
-  <div class="form-box">
-    <%= render partial: "shared/form", locals: { form_url: "/login", form_method: :post, submit_label: "Login" } %>
-  </div>
+
+
+    Logged in as <strong><%= Current.user.email_address %></strong>.<br>
   <a href="https://www.flaticon.com/free-icons/flower" title="flower icons">Flower icons created by Freepik - Flaticon</a>
-</div>

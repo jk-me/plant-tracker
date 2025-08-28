@@ -87,7 +87,7 @@ jobs:
       - name: Set up database
         run: |
           cp config/database.yml.ci config/database.yml
-          bin/rails db:create db:schema:load
+          bin/rails db:create db:schema:load RAILS_ENV=test
 
       - name: Run tests
         env:

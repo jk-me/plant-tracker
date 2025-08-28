@@ -4,6 +4,6 @@ test:
   database: plant_test
   username: postgres
   password: password
-  host: postgres
+  host: localhost
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000

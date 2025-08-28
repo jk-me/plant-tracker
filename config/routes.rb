@@ -14,6 +14,10 @@ Rails.application.routes.draw do
   resources :plants
   resources :users, only: %i[new create]
 
+  resource :session, only: %i[ create destroy ]
+  resources :users, only: %i[ new create ]
+  resources :passwords, param: :token
+  get "/login", to: "sessions#new"
   post "/login", to: "sessions#create"
-  post "/signup", to: "users#new"
+  get "/signup", to: "users#new"
 end

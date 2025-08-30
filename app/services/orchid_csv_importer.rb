@@ -1,14 +1,17 @@
 require "csv"
 
+# 'orchid_data/Orchid tracker cd752fe52ffe4bb0b903923cdc453a4c_all copy.csv'
 class OrchidCsvImporter
-  CSV_DIR = Rails.root.join("orchid_data")
+  CSV_DIR = "orchid_data/Orchid tracker cd752fe52ffe4bb0b903923cdc453a4c_all copy.csv"
 
   # Public: Import all CSV files in the orchid_data directory.
   # If a plant with the same name exists, it will be updated; otherwise created.
   def self.import_all(dry_run: false)
-    Dir.glob(CSV_DIR.join("*.csv")).each do |path|
-      new(path, dry_run: dry_run).import
-    end
+    # Dir.glob(CSV_DIR.join("*.csv")).each do |path|
+    #   new(path, dry_run: dry_run).import
+    # end
+
+    new(CSV_DIR, dry_run: dry_run).import
   end
 
   def initialize(path, dry_run: false)
@@ -18,6 +21,7 @@ class OrchidCsvImporter
 
   def import
     rows = CSV.read(@path)
+    user = User.first
     return if rows.empty?
 
     headers = rows[0].map { |h| header_to_attr(h) }
@@ -26,15 +30,18 @@ class OrchidCsvImporter
       attrs = build_attributes_from_row(headers, row)
 
       # Find or initialize by name to avoid duplicates.
-      plant = Plant.find_or_initialize_by(name: attrs[:name])
+      plant = Plant.find_or_initialize_by(name: attrs[:name], user: user)
       # Assign only allowed attributes
       plant.assign_attributes(attrs)
+      # debugger
 
       if @dry_run
         status = plant.persisted? ? "would update" : "would create"
-        log_line = "DRY RUN: #{status} plant=#{plant.name.inspect} attrs=#{attrs.inspect} (from #{@path.basename})"
+        log_line = "DRY RUN: #{status} plant=#{plant.name.inspect}" # attrs=#{attrs.inspect} (from #{@path.basename})"
         Rails.logger.info(log_line)
         puts log_line
+        puts "#{plant.name} valid" if plant.valid?
+        puts plant.errors.full_messages unless plant.valid?
         next
       end
 
@@ -64,6 +71,8 @@ class OrchidCsvImporter
       # Map header-derived attr to our normalized model column key
       cleaned = header_attr.to_s.gsub(/[^a-z0-9_]/, "_").gsub(/^_|_$/, "")
       mapped_key = map_header_to_column(cleaned.to_sym)
+      # debugger
+      next if mapped_key.nil?
 
       # Parse values based on mapped key type
       value = case mapped_key
@@ -71,7 +80,7 @@ class OrchidCsvImporter
         parse_boolean(raw)
       when :last_update_date, :last_photo_date, :slow_release_date, :repotted_date, :acquired_date
         parse_date(raw)
-      when :cost, :shipping_cost_per_plant, :total_cost
+      when :cost, :shipping_cost, :total_cost
         parse_money(raw)
       when :todo, :common_issues, :orchid_ancestry_link, :species_ancestry
         raw.to_s.strip
@@ -79,7 +88,6 @@ class OrchidCsvImporter
         # Default: keep as string
         raw.to_s.strip
       end
-
       attrs[mapped_key] = value
     end
 
@@ -94,26 +102,26 @@ class OrchidCsvImporter
   # Map a cleaned header symbol to the final plant column symbol used in DB
   def map_header_to_column(cleaned_sym)
     mapping = {
-      bs: :blooming_status,
+      bs: :blooming_size,
       name: :name,
-      since_update: :since_update,
-      since_last_pic: :since_last_pic,
-      since_slow_release: :since_slow_release,
-      since_repot: :since_repot,
+      since_update: nil,
+      since_last_pic: nil,
+      since_slow_release: nil,
+      since_repot: nil,
       to_do: :todo,
       location: :location,
       last_update: :last_update_date,
       last_photo: :last_photo_date,
       slow_release: :slow_release_date,
-  re_potted: :repotted_date,
-  're-potted': :repotted_date,
+      re_potted: :repotted_date,
+      're-potted': :repotted_date,
       orchid_family: :orchid_family,
-      since_acquired: :since_acquired,
+      since_acquired: nil,
       summer_in_out: :summer_in_out,
       vendor: :vendor,
       cost: :cost,
-      'shipping_cost_(per_plant)': :shipping_cost_per_plant,
-      shipping_cost_per_plant: :shipping_cost_per_plant,
+      'shipping_cost_(per_plant)': :shipping_cost,
+      shipping_cost_per_plant: :shipping_cost,
       total_cost: :total_cost,
       acquired_date: :acquired_date,
       'mislabeled_(orig_tag)': :mislabeled_original_tag,
@@ -127,9 +135,9 @@ class OrchidCsvImporter
       species_ancestry: :species_ancestry
     }
 
-    mapping[cleaned_sym] || cleaned_sym
-    mapping[cleaned_sym] || cleaned_sym
+    mapping[cleaned_sym]
   end
+
   def parse_boolean(value)
     return true if value.to_s.strip.downcase == "yes"
     return false if value.to_s.strip.downcase == "no"

@@ -3,7 +3,7 @@ class PlantsController < ApplicationController
 
   # GET /plants
   def index
-    @plants = current_user.plants
+    @plants = Current.user.plants
   end
 
   # GET /plants/1
@@ -12,7 +12,7 @@ class PlantsController < ApplicationController
 
   # GET /plants/new
   def new
-    @plant = current_user.plants.build
+    @plant = Current.user.plants.build
   end
 
   # GET /plants/1/edit

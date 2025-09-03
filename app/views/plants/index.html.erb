@@ -1,58 +1,22 @@
-<%# Plants index view: reads CSV rows from repo `orchid_data` file when available, otherwise falls back to an embedded sample CSV. %>
-<% require 'csv' %>
-
-<%
-# Prefer the CSV file in the repository's orchid_data directory
-csv_filename = 'Orchid tracker cd752fe52ffe4bb0b903923cdc453a4c_all copy.csv'
-csv_path = Rails.root.join('orchid_data', csv_filename)
-
-if File.exist?(csv_path)
-  begin
-    parsed = CSV.read(csv_path)
-  rescue => e
-    # If reading fails for any reason, fall back to the embedded sample below
-    Rails.logger.warn("Failed to read CSV at #{csv_path}: #{e.message}")
-    parsed = nil
-  end
-end
-headers = parsed[0] || []
-sample_rows = parsed[1..] || []
-
-# Convert header label into a plausible model attribute name: "Since update" -> "since_update"
-def header_to_attr(label)
-  label.to_s.downcase.gsub(/[^a-z0-9]+/, '_').gsub(/^_|_$/, '')
-end
-%>
-
 <h1>Plants</h1>
 
-<p>This table shows CSV-based headers (from <code>orchid_data/#{csv_filename}</code> when present) and a sample row. If <code>@plants</code> is present, it will also render plant rows by mapping each header to a model attribute (best-effort snake_case conversion).</p>
+<p>If <code>@plants</code> is present, it will also render plant rows by mapping each header to a model attribute (best-effort snake_case conversion).</p>
 
 <table class="table table-striped table-sm">
   <thead>
     <tr>
-      <% headers.each do |h| %>
+      <% @headers.each do |h| %>
         <th><%= h %></th>
       <% end %>
     </tr>
   </thead>
 
   <tbody>
-    <%# Render the sample CSV row first (the user's example or second CSV row) %>
-    <% sample_rows.each do |row| %>
-    
-    <tr class="sample-row">
-      <% row.each do |val| %>
-        <td><%= val.to_s %></td>
-      <% end %>
-    </tr>
-    <% end %>
-
-    <%# Render real plants if controller provides @plants %>
+    <%# Render plants if controller provides @plants %>
     <% if defined?(@plants) && @plants.present? %>
       <% @plants.each do |plant| %>
         <tr>
-          <% headers.each do |label| %>
+          <% @headers.each do |label| %>
             <% attr = header_to_attr(label) %>
             <% value = if plant.respond_to?(attr)
                          plant.public_send(attr)
@@ -68,5 +32,3 @@ end
     <% end %>
   </tbody>
 </table>
-
-<p class="text-muted">Notes: header-&gt;attribute mapping is a best-effort conversion of the CSV labels to snake_case attribute names; missing attributes render as empty strings.</p>

@@ -1,0 +1,26 @@
+<%= form_with model: plant, data: { turbo_frame: "main-content" } do |form| %>
+  <% if plant.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(plant.errors.count, "error") %> prohibited this plant from being saved:</h2>
+      <ul>
+        <% plant.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :name %>
+    <%= form.text_field :name %>
+  </div>
+
+  <div>
+    <%= form.label :date_acquired %>
+    <%= form.date_select :date_acquired %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

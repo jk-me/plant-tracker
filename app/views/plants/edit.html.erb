@@ -1,0 +1,125 @@
+<turbo-frame id="<%= dom_id(@plant) %>">
+  <h1>Edit: <%= @plant.name %></h1>
+
+  <%= form_with(model: @plant, local: true) do |f| %>
+    <div class="field">
+      <%= f.label :name %>
+      <%= f.text_field :name %>
+    </div>
+
+    <div class="field">
+      <%= f.label :acquired_date %>
+      <%= f.date_field :acquired_date %>
+    </div>
+
+    <div class="field">
+      <%= f.label :blooming_size %>
+      <%= f.check_box :blooming_size %>
+    </div>
+
+    <div class="field">
+      <%= f.label :todo %>
+      <%= f.text_area :todo %>
+    </div>
+
+    <div class="field">
+      <%= f.label :location %>
+      <%= f.text_field :location %>
+    </div>
+
+    <div class="field">
+      <%= f.label :last_update_date %>
+      <%= f.date_field :last_update_date %>
+    </div>
+
+    <div class="field">
+      <%= f.label :last_photo_date %>
+      <%= f.date_field :last_photo_date %>
+    </div>
+
+    <div class="field">
+      <%= f.label :slow_release_date %>
+      <%= f.date_field :slow_release_date %>
+    </div>
+
+    <div class="field">
+      <%= f.label :repotted_date %>
+      <%= f.date_field :repotted_date %>
+    </div>
+
+    <div class="field">
+      <%= f.label :orchid_family %>
+      <%= f.text_field :orchid_family %>
+    </div>
+
+    <div class="field">
+      <%= f.label :summer_in_out %>
+      <%= f.text_field :summer_in_out %>
+    </div>
+
+    <div class="field">
+      <%= f.label :vendor %>
+      <%= f.text_field :vendor %>
+    </div>
+
+    <div class="field">
+      <%= f.label :cost %>
+      <%= f.number_field :cost, step: 0.01 %>
+    </div>
+
+    <div class="field">
+      <%= f.label :shipping_cost %>
+      <%= f.number_field :shipping_cost, step: 0.01 %>
+    </div>
+
+    <div class="field">
+      <%= f.label :total_cost %>
+      <%= f.number_field :total_cost, step: 0.01 %>
+    </div>
+
+    <div class="field">
+      <%= f.label :mislabeled_original_tag %>
+      <%= f.text_field :mislabeled_original_tag %>
+    </div>
+
+    <div class="field">
+      <%= f.label :light %>
+      <%= f.text_field :light %>
+    </div>
+
+    <div class="field">
+      <%= f.label :water %>
+      <%= f.text_field :water %>
+    </div>
+
+    <div class="field">
+      <%= f.label :temperature %>
+      <%= f.text_field :temperature %>
+    </div>
+
+    <div class="field">
+      <%= f.label :common_issues %>
+      <%= f.text_area :common_issues %>
+    </div>
+
+    <div class="field">
+      <%= f.label :dormancy %>
+      <%= f.text_field :dormancy %>
+    </div>
+
+    <div class="field">
+      <%= f.label :orchid_ancestry_link %>
+      <%= f.text_area :orchid_ancestry_link %>
+    </div>
+
+    <div class="field">
+      <%= f.label :species_ancestry %>
+      <%= f.text_area :species_ancestry %>
+    </div>
+
+    <div class="actions">
+      <%= f.submit "Save" %>
+      <%= link_to "Back", plants_path %>
+    </div>
+  <% end %>
+</turbo-frame>

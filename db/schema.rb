@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_27_235548) do
+ActiveRecord::Schema[8.0].define(version: 2025_08_30_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -36,10 +36,32 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_27_235548) do
 
   create_table "plants", force: :cascade do |t|
     t.string "name", null: false
-    t.date "date_acquired"
+    t.date "acquired_date"
     t.bigint "user_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "blooming_size", default: false
+    t.text "todo"
+    t.string "location"
+    t.date "last_update_date"
+    t.date "last_photo_date"
+    t.date "slow_release_date"
+    t.date "repotted_date"
+    t.string "orchid_family"
+    t.string "summer_in_out"
+    t.string "vendor"
+    t.decimal "cost", precision: 12, scale: 2
+    t.decimal "shipping_cost", precision: 12, scale: 2
+    t.decimal "total_cost", precision: 12, scale: 2
+    t.string "mislabeled_original_tag"
+    t.string "light"
+    t.string "water"
+    t.string "temperature"
+    t.text "common_issues"
+    t.string "dormancy"
+    t.text "orchid_ancestry_link"
+    t.text "species_ancestry"
+    t.index ["name"], name: "index_plants_on_name"
     t.index ["user_id"], name: "index_plants_on_user_id"
   end
 

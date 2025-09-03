@@ -7,21 +7,7 @@ class PlantsController < ApplicationController
   # GET /plants
   def index
     @plants = Current.user.plants
-    # Prefer the CSV file in the repository's orchid_data directory
-    csv_filename = "Orchid tracker cd752fe52ffe4bb0b903923cdc453a4c_all copy.csv"
-    csv_path = Rails.root.join("orchid_data", csv_filename)
-
-    if File.exist?(csv_path)
-      begin
-        parsed = CSV.read(csv_path)
-      rescue => e
-        # If reading fails for any reason, fall back to the embedded sample below
-        Rails.logger.warn("Failed to read CSV at #{csv_path}: #{e.message}")
-        parsed = nil
-      end
-    end
-    @headers = parsed[0] || []
-    @sample_rows = parsed[1..] || []
+    @headers = header_map.keys
   end
 
   # GET /plants/1
@@ -82,53 +68,40 @@ class PlantsController < ApplicationController
       params.require(:plant).permit(:name, :date_acquired)
     end
 
-  # Convert header label into a model attribute name using an explicit map
-  # Falls back to a conservative snake_case conversion when a label isn't present in the map.
+    def header_map
+      {
+      "BS" => "blooming_size",
+      "Name" => "name",
+      "Since Update" => "",
+      "Since Last Pic" => "",
+      "Since Slow Release" => "",
+      "Since Repot" => "",
+      "Since Acquired" => "",
+      "To-Do" => "todo",
+      "Location" => "location",
+      "Last Update" => "last_update_date",
+      "Last Photo" => "last_photo_date",
+      "Slow Release" => "slow_release_date",
+      "Re-Potted" => "repotted_date",
+      "Acquired Date" => "acquired_date",
+      "Orchid Family" => "orchid_family",
+      "Summer In/Out" => "summer_in_out",
+      "Vendor" => "vendor",
+      "Cost" => "cost",
+      "Shipping Cost (Per Plant)" => "shipping_cost",
+      "Total Cost" => "total_cost",
+      "Mislabeled (Orig Tag)" => "mislabeled_original_tag",
+      "Light" => "light",
+      "Water" => "water",
+      "Temperature" => "temperature",
+      "Common Issues" => "common_issues",
+      "Dormancy" => "dormancy",
+      "Orchid Ancestry Link" => "orchid_ancestry_link",
+      "Species Ancestry" => "species_ancestry"
+      }
+    end
+
   def header_to_attr(label)
-    return "" if label.nil?
-
-    key = label.to_s.strip.downcase
-
-    map = {
-      "bs" => "blooming_size",
-      "name" => "name",
-      "since update" => "since_update",
-      "since last pic" => "since_last_pic",
-      "since slow release" => "since_slow_release",
-      "since repot" => "since_repot",
-      "to-do" => "todo",
-      "todo" => "todo",
-      "location" => "location",
-      "last update" => "last_update_date",
-      "last photo" => "last_photo_date",
-      "slow release" => "slow_release_date",
-      "re-potted" => "repotted_date",
-      "re potted" => "repotted_date",
-      "orchid family" => "orchid_family",
-      "since acquired" => "since_acquired",
-      "summer in/out" => "summer_in_out",
-      "summer in_out" => "summer_in_out",
-      "vendor" => "vendor",
-      "cost" => "cost",
-      "shipping cost (per plant)" => "shipping_cost_per_plant",
-      "shipping cost per plant" => "shipping_cost_per_plant",
-      "total cost" => "total_cost",
-      "acquired date" => "acquired_date",
-      "mislabeled (orig tag)" => "mislabeled_original_tag",
-      "mislabeled" => "mislabeled_original_tag",
-      "light" => "light",
-      "water" => "water",
-      "temperature" => "temperature",
-      "common issues" => "common_issues",
-      "dormancy" => "dormancy",
-      "orchid ancestry link" => "orchid_ancestry_link",
-      "species ancestry" => "species_ancestry"
-    }
-
-    mapped = map[key]
-    return mapped if mapped.present?
-
-    # Fallback: conservative snake_case conversion
-    label.to_s.downcase.gsub(/[^a-z0-9]+/, "_").gsub(/^_|_$/, "")
+    header_map[label]
   end
 end

@@ -20,8 +20,6 @@
             <% attr = header_to_attr(label) %>
             <% value = if plant.respond_to?(attr)
                          plant.public_send(attr)
-                       elsif plant.respond_to?(:[]) && plant[attr]
-                         plant[attr]
                        else
                          nil
                        end %>

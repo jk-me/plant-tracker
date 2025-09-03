@@ -18,8 +18,11 @@
         <tr>
           <% @headers.each do |label| %>
             <% value = header_to_attr(label, plant) %>
-            
+            <% if label == 'Name'%>
+            <td><%= link_to value, edit_plant_path(plant), data: { turbo_frame:  "_top" } %></td>
+            <% else %>
             <td><%= value.to_s %></td>
+            <% end %>
           <% end %>
         </tr>
       <% end %>

@@ -21,6 +21,7 @@ class PlantsController < ApplicationController
 
   # GET /plants/1/edit
   def edit
+    @plant = Current.user.plants.find(params[:id])
   end
 
   # POST /plants
@@ -41,7 +42,7 @@ class PlantsController < ApplicationController
     if @plant.update(plant_params)
       respond_to do |format|
         format.turbo_stream
-        format.html { redirect_to @plant, notice: "Plant was successfully updated." }
+        format.html { redirect_to edit_plant_path(@plant), notice: "Plant was successfully updated." }
       end
     else
       render :edit, status: :unprocessable_entity
@@ -65,7 +66,31 @@ class PlantsController < ApplicationController
 
     # Only allow a list of trusted parameters through.
     def plant_params
-      params.require(:plant).permit(:name, :date_acquired)
+      params.require(:plant).permit(
+        :name,
+        :acquired_date,
+        :blooming_size,
+        :todo,
+        :location,
+        :last_update_date,
+        :last_photo_date,
+        :slow_release_date,
+        :repotted_date,
+        :orchid_family,
+        :summer_in_out,
+        :vendor,
+        :cost,
+        :shipping_cost,
+        :total_cost,
+        :mislabeled_original_tag,
+        :light,
+        :water,
+        :temperature,
+        :common_issues,
+        :dormancy,
+        :orchid_ancestry_link,
+        :species_ancestry
+      )
     end
 
     def header_map

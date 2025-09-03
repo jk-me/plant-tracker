@@ -17,12 +17,8 @@
       <% @plants.each do |plant| %>
         <tr>
           <% @headers.each do |label| %>
-            <% attr = header_to_attr(label) %>
-            <% value = if plant.respond_to?(attr)
-                         plant.public_send(attr)
-                       else
-                         nil
-                       end %>
+            <% value = header_to_attr(label, plant) %>
+            
             <td><%= value.to_s %></td>
           <% end %>
         </tr>

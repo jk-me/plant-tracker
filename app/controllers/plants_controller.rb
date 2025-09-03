@@ -72,11 +72,11 @@ class PlantsController < ApplicationController
       {
       "BS" => "blooming_size",
       "Name" => "name",
-      "Since Update" => "",
-      "Since Last Pic" => "",
-      "Since Slow Release" => "",
-      "Since Repot" => "",
-      "Since Acquired" => "",
+      "Since Update" => ->(plant) { days_since(plant.last_update_date) },
+      "Since Last Pic" => ->(plant) { days_since(plant.last_photo_date) },
+      "Since Slow Release" => ->(plant) { days_since(plant.slow_release_date) },
+      "Since Repot" => ->(plant) { days_since(plant.repotted_date) },
+      "Since Acquired" => ->(plant) { days_since(plant.acquired_date) },
       "To-Do" => "todo",
       "Location" => "location",
       "Last Update" => "last_update_date",
@@ -101,7 +101,17 @@ class PlantsController < ApplicationController
       }
     end
 
-  def header_to_attr(label)
-    header_map[label]
-  end
+    def header_to_attr(label, plant = nil)
+      attr = header_map[label]
+      if attr.is_a?(Proc) && plant
+        attr.call(plant)
+      else
+        attr.is_a?(String) && plant ? plant.public_send(attr) : attr
+      end
+    end
+
+    def days_since(date)
+      return "" unless date
+      (Date.today - date.to_date).to_i
+    end
 end

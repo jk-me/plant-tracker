@@ -12,7 +12,7 @@ Rails.application.routes.draw do
   # Defines the root path route ("/")
   root "welcome#index"
 
-  resource :session, only: %i[ create destroy ]
+  resource :session, only: %i[ destroy ]
   resources :users, only: %i[ new create ]
   resources :passwords, param: :token
   get "/login", to: "sessions#new"

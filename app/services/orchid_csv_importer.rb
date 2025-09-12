@@ -73,7 +73,7 @@ class OrchidCsvImporter
       # Map header-derived attr to our normalized model column key
       cleaned = header_attr.to_s.gsub(/[^a-z0-9_]/, "_").gsub(/^_|_$/, "")
       mapped_key = map_header_to_column(cleaned.to_sym)
-      # debugger
+
       next if mapped_key.nil?
 
       # Parse values based on mapped key type
@@ -116,18 +116,15 @@ class OrchidCsvImporter
       last_photo: :last_photo_date,
       slow_release: :slow_release_date,
       re_potted: :repotted_date,
-      're-potted': :repotted_date,
       orchid_family: :orchid_family,
       since_acquired: nil,
       summer_in_out: :summer_in_out,
       vendor: :vendor,
       cost: :cost,
-      'shipping_cost_(per_plant)': :shipping_cost,
       shipping_cost_per_plant: :shipping_cost,
       total_cost: :total_cost,
       acquired_date: :acquired_date,
-      'mislabeled_(orig_tag)': :mislabeled_original_tag,
-      mislabeled: :mislabeled_original_tag,
+      mislabeled_orig_tag: :mislabeled_original_tag,
       light: :light,
       water: :water,
       temperature: :temperature,

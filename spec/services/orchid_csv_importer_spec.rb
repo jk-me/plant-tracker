@@ -1,7 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe OrchidCsvImporter, type: :model do
-  let(:importer) { OrchidCsvImporter.new('orchid_data/orchid_data_dry_run.csv', dry_run: true) }
+  let(:fixture_csv) { Rails.root.join('spec', 'fixtures', 'test_orchid_data.csv').to_s }
+  let(:importer) { OrchidCsvImporter.new(fixture_csv, dry_run: true) }
 
   describe '#parse_date (private)' do
     it 'prefers US parsing format MM/DD/YYYY' do
@@ -40,6 +41,21 @@ RSpec.describe OrchidCsvImporter, type: :model do
 
     it 'returns nil for unparseable string' do
       expect(importer.send(:parse_date, 'not a date')).to be_nil
+    end
+  end
+
+  describe '#import (dry run)' do
+    it 'reads the fixture CSV without raising' do
+      expect { OrchidCsvImporter.new(fixture_csv, dry_run: true).import }.not_to raise_error
+    end
+
+    it 'imports the data correctly' do
+      importer = OrchidCsvImporter.new(fixture_csv, dry_run: false)
+      expect { importer.import }.to change { Plant.count }.by(2)
+      schilleriana = Plant.find_by(name: 'Phalaenopsis schilleriana')
+      expect(schilleriana.acquired_date).to eq(Date.new(2024, 7, 1))
+      expect(schilleriana.repotted_date).to eq(Date.new(2025, 1, 15))
+      expect(schilleriana.mislabeled_original_tag).to eq('Phalaenopsis phillipinensis')
     end
   end
 end

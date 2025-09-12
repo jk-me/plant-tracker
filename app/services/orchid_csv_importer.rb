@@ -1,8 +1,10 @@
 require "csv"
 
 # 'orchid_data/Orchid tracker cd752fe52ffe4bb0b903923cdc453a4c_all copy.csv'
+# run with dry run: `OrchidCsvImporter.import_all(dry_run: true)`
 class OrchidCsvImporter
-  CSV_DIR = "orchid_data/Orchid tracker cd752fe52ffe4bb0b903923cdc453a4c_all copy.csv"
+  CSV_DIR = "orchid_data"
+  CSV_FILE = "orchid_data/orchid_data_dry_run.csv"
 
   # Public: Import all CSV files in the orchid_data directory.
   # If a plant with the same name exists, it will be updated; otherwise created.
@@ -11,7 +13,7 @@ class OrchidCsvImporter
     #   new(path, dry_run: dry_run).import
     # end
 
-    new(CSV_DIR, dry_run: dry_run).import
+    new(CSV_FILE, dry_run: dry_run).import
   end
 
   def initialize(path, dry_run: false)
@@ -40,7 +42,7 @@ class OrchidCsvImporter
         log_line = "DRY RUN: #{status} plant=#{plant.name.inspect}" # attrs=#{attrs.inspect} (from #{@path.basename})"
         Rails.logger.info(log_line)
         puts log_line
-        puts "#{plant.name} valid" if plant.valid?
+        puts "#{plant.name} invalid" if !plant.valid?
         puts plant.errors.full_messages unless plant.valid?
         next
       end
@@ -145,8 +147,24 @@ class OrchidCsvImporter
   end
 
   def parse_date(value)
-    return nil if value.to_s.strip.empty?
-    Date.parse(value) rescue nil
+    s = value.to_s.strip
+    return nil if s.empty?
+
+    formats = [
+      "%m/%d/%Y", # 03/09/2025
+      "%B %d, %Y" # May 19, 2023
+    ]
+
+    formats.each do |fmt|
+      begin
+        return Date.strptime(s, fmt)
+      rescue Date::Error
+        next
+      end
+    end
+
+    # Try Date.parse as a last resort
+    Date.parse(s) rescue nil
   end
 
   def parse_money(value)

@@ -7,7 +7,7 @@ RSpec.describe "Users", type: :request do
         post users_path, params: {  email_address: "signup@example.com", password: "password", password_confirmation: "password" }
       }.to change(User, :count).by(1)
 
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(plants_path)
       follow_redirect!
       expect(response.body).to include("Logged in as")
       expect(response.body).to include("signup@example.com")

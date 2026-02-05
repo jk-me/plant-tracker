@@ -5,12 +5,6 @@ RSpec.describe "Authentication", type: :system do
 
   let(:user_attrs) { { email_address: "user@example.com", password: "password", password_confirmation: "password" } }
 
-  it "does not show welcome page when not logged in" do
-    visit root_path
-    # Either redirected to login or welcome content not present
-    expect(page).to (have_current_path(login_path) | have_no_content("Welcome"))
-  end
-
   it "renders login page with fields and signup link" do
     visit login_path
     expect(page).to have_field("Email")
@@ -26,8 +20,8 @@ RSpec.describe "Authentication", type: :system do
     fill_in "Password", with: user_attrs[:password]
     click_button "Login"
 
-    expect(page).to have_current_path(root_path)
-    expect(page).to have_content("Welcome")
+    expect(page).to have_current_path(plants_path)
+    expect(page).to have_content("Since Update")
     expect(page).to have_link("Logout")
   end
 
@@ -52,8 +46,8 @@ RSpec.describe "Authentication", type: :system do
     fill_in "Confirm Password", with: "securepass"
     click_button "Sign Up"
 
-    expect(page).to have_current_path(root_path)
-    expect(page).to have_content("Welcome")
+    expect(page).to have_current_path(plants_path)
+    expect(page).to have_content("Since Update")
     expect(User.exists?(email_address: "new@example.com")).to be true
   end
 
@@ -68,7 +62,5 @@ RSpec.describe "Authentication", type: :system do
     click_link "Logout"
     expect(page).to have_current_path(login_path)
     expect(page).to have_no_content("Welcome")
-    visit root_path
-    expect(page).to (have_current_path(login_path) | have_no_content("Welcome"))
   end
 end

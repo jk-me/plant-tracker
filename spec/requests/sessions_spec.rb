@@ -3,12 +3,25 @@ require "rails_helper"
 RSpec.describe "Sessions", type: :request do
   let(:user) { User.create!(email_address: "req@example.com", password: "password", password_confirmation: "password") }
 
+  describe "GET /login" do
+    it "renders the login page" do
+      get login_path
+      expect(response).to have_http_status(:ok)
+      expect(response.body).to include("Login")
+    end
+
+    it "allows unauthenticated access" do
+      get login_path
+      expect(response).to have_http_status(:ok)
+    end
+  end
+
   describe "POST /login" do
     it "creates a session and redirects on valid credentials" do
       post login_path, params: {  email_address: user.email_address, password: "password" }
-      expect(response).to redirect_to(root_path)
+      expect(response).to redirect_to(plants_path)
       follow_redirect!
-      expect(response.body).to include("Welcome")
+      expect(response.body).to include("Since Update")
       expect(Session.last.user).to eq(user)
     end
 

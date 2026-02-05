@@ -1,12 +1,15 @@
 <header class="site-header">
   <nav class="navbar">
     <div class="navbar-brand">
-      <%= link_to "Plant Tracker", root_path, class: "navbar-item" %>
+      <%= link_to "Plant Tracker", if authenticated? then plants_path else root_path end, class: "navbar-item" %>
     </div>
     <div class="navbar-menu">
       <ul class="navbar-links">
-        <li><%= link_to "Home", root_path %></li>
-        <li><%= link_to "My Plants", plants_path %></li>
+        <% if authenticated? %>
+          <li><%= link_to "My Plants", plants_path %> | <%= link_to "Logout", session_path, data: { "turbo-method": :delete }, class: "logout-link" %></li>
+        <% else %>
+          <li><%= link_to "Login", login_path, class: "login-link" %> | <%= link_to "Sign Up", signup_path, class: "signup-link" %></li>
+        <% end %>
       </ul>
     </div>
 

@@ -1,6 +1,10 @@
 class WelcomeController < ApplicationController
+  allow_unauthenticated_access only: %i[ index ]
+
   def index
-    # This action renders the welcome page
+    if authenticated?
+      redirect_to plants_path
+    end
   end
 
   def signup

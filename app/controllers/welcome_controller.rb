@@ -2,7 +2,6 @@ class WelcomeController < ApplicationController
   allow_unauthenticated_access only: %i[ index ]
 
   def index
-
     if authenticated?
       redirect_to plants_path
     end

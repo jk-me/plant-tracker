@@ -20,4 +20,7 @@ Rails.application.routes.draw do
   get "/login", to: "sessions#new"
   post "/login", to: "sessions#create"
   get "/signup", to: "users#new"
+
+  # request to get a CSRF token tied to its session cookie.
+  get "/csrf_token", to: "csrf_tokens#show"
 end

@@ -8,14 +8,23 @@ class SessionsController < ApplicationController
   def create
     if user = User.authenticate_by(params.permit(:email_address, :password))
       start_new_session_for user
-      redirect_to after_authentication_url
+      respond_to do |format|
+        format.html { redirect_to after_authentication_url }
+        format.json { render json: { success: true }, status: :ok }
+      end
     else
-      redirect_to login_path, alert: "Try another email address or password."
+      respond_to do |format|
+        format.html { redirect_to login_path, alert: "Try another email address or password." }
+        format.json { render json: { success: false, error: "Invalid email or password." }, status: :unauthorized }
+      end
     end
   end
 
   def destroy
     terminate_session
-    redirect_to login_path, notice: "You have been logged out."
+    respond_to do |format|
+      format.html { redirect_to login_path, notice: "You have been logged out." }
+      format.json { render json: { success: true }, status: :ok }
+    end
   end
 end

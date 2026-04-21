@@ -20,6 +20,14 @@ class SessionsController < ApplicationController
     end
   end
 
+  def show
+    if Current.user
+      render json: { user: Current.user }, status: :ok
+    else
+      render json: { user: nil }, status: :unauthorized
+    end
+  end
+
   def destroy
     terminate_session
     respond_to do |format|

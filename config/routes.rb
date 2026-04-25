@@ -13,7 +13,6 @@ Rails.application.routes.draw do
   root "welcome#index"
 
   resource :session, only: %i[ destroy show ]
-  get "/login", to: "sessions#new"
   post "/login", to: "sessions#create"
 
   resources :users, only: %i[ create ]

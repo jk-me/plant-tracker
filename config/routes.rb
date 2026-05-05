@@ -11,13 +11,17 @@ Rails.application.routes.draw do
 
   # Defines the root path route ("/")
   root "welcome#index"
-  resources :plants
-  resources :users, only: %i[new create]
 
-  resource :session, only: %i[ destroy ]
-  resources :users, only: %i[ new create ]
-  resources :passwords, param: :token
-  get "/login", to: "sessions#new"
+  resource :session, only: %i[ destroy show ]
   post "/login", to: "sessions#create"
+
+  resources :users, only: %i[ create ]
   get "/signup", to: "users#new"
+
+  resources :passwords, param: :token
+
+  resources :plants
+
+  # request to get a CSRF token tied to its session cookie.
+  get "/csrf_token", to: "csrf_tokens#show"
 end

@@ -8,6 +8,10 @@ class PlantsController < ApplicationController
   def index
     @plants = Current.user.plants
     @headers = header_map.keys
+    respond_to do |format|
+      format.html { render :index }
+      format.json { render json: @plants.as_json }
+    end
   end
 
   # GET /plants/1
@@ -26,11 +30,11 @@ class PlantsController < ApplicationController
 
   # POST /plants
   def create
-    @plant = current_user.plants.build(plant_params)
+    @plant = Current.user.plants.build(plant_params)
     if @plant.save
       respond_to do |format|
-        format.turbo_stream
         format.html { redirect_to @plant, notice: "Plant was successfully created." }
+        format.json { render json: @plant, status: :created }
       end
     else
       render :new, status: :unprocessable_entity
@@ -41,8 +45,8 @@ class PlantsController < ApplicationController
   def update
     if @plant.update(plant_params)
       respond_to do |format|
-        format.turbo_stream
         format.html { redirect_to edit_plant_path(@plant), notice: "Plant was successfully updated." }
+        format.json { render json: @plant, status: :ok }
       end
     else
       render :edit, status: :unprocessable_entity
@@ -53,8 +57,8 @@ class PlantsController < ApplicationController
   def destroy
     @plant.destroy
     respond_to do |format|
-      format.turbo_stream
       format.html { redirect_to plants_url, notice: "Plant was successfully destroyed." }
+      format.json { head :no_content }
     end
   end
 

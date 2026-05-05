@@ -22,6 +22,36 @@ jobs:
       - name: Scan for common Rails security vulnerabilities using static analysis
         run: bin/brakeman --no-pager
 
+  rails_server:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: .ruby-version
+          bundler-cache: true
+
+      - name: Start Rails server
+        run: |
+          # set up db
+          bin/rails db:create db:schema:load RAILS_ENV=test
+
+          # start server in background
+          bin/rails server -e test -p 3001
+
+          # wait for server to be ready
+          sleep 10
+
+          # hit root endpoint to verify server is running
+          curl -f http://localhost:3001/ || exit 1
+
+          # stop server
+          pkill -f puma
+
   scan_js:
     runs-on: ubuntu-latest
 

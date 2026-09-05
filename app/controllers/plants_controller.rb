@@ -16,6 +16,11 @@ class PlantsController < ApplicationController
 
   # GET /plants/1
   def show
+    @plant = Current.user.plants.find(params[:id])
+    respond_to do |format|
+      format.html { render :show }
+      format.json { render json: @plant.as_json }
+    end
   end
 
   # GET /plants/new

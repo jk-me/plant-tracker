@@ -10,76 +10,87 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_30_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_09_06_000000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
   create_table "bloomings", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.date "in_full_bloom_date"
-    t.date "withered_date"
     t.date "inflorescence_started_date"
     t.bigint "plant_id", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.date "withered_date"
     t.index ["plant_id"], name: "index_bloomings_on_plant_id"
   end
 
   create_table "photos", force: :cascade do |t|
-    t.string "image_url", null: false
-    t.bigint "plant_id", null: false
     t.bigint "blooming_id"
     t.datetime "created_at", null: false
+    t.string "image_url", null: false
+    t.bigint "plant_id", null: false
     t.datetime "updated_at", null: false
     t.index ["blooming_id"], name: "index_photos_on_blooming_id"
     t.index ["plant_id"], name: "index_photos_on_plant_id"
   end
 
   create_table "plants", force: :cascade do |t|
-    t.string "name", null: false
     t.date "acquired_date"
-    t.bigint "user_id", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
     t.boolean "blooming_size", default: false
-    t.text "todo"
-    t.string "location"
-    t.date "last_update_date"
-    t.date "last_photo_date"
-    t.date "slow_release_date"
-    t.date "repotted_date"
-    t.string "orchid_family"
-    t.string "summer_in_out"
-    t.string "vendor"
-    t.decimal "cost", precision: 12, scale: 2
-    t.decimal "shipping_cost", precision: 12, scale: 2
-    t.decimal "total_cost", precision: 12, scale: 2
-    t.string "mislabeled_original_tag"
-    t.string "light"
-    t.string "water"
-    t.string "temperature"
     t.text "common_issues"
+    t.decimal "cost", precision: 12, scale: 2
+    t.datetime "created_at", null: false
     t.string "dormancy"
+    t.date "last_photo_date"
+    t.date "last_update_date"
+    t.string "light"
+    t.string "location"
+    t.string "mislabeled_original_tag"
+    t.string "name", null: false
     t.text "orchid_ancestry_link"
+    t.string "orchid_family"
+    t.date "repotted_date"
+    t.decimal "shipping_cost", precision: 12, scale: 2
+    t.date "slow_release_date"
     t.text "species_ancestry"
+    t.string "summer_in_out"
+    t.string "temperature"
+    t.text "todo"
+    t.decimal "total_cost", precision: 12, scale: 2
+    t.datetime "updated_at", null: false
+    t.bigint "user_id", null: false
+    t.string "vendor"
+    t.string "water"
     t.index ["name"], name: "index_plants_on_name"
     t.index ["user_id"], name: "index_plants_on_user_id"
   end
 
   create_table "sessions", force: :cascade do |t|
-    t.bigint "user_id", null: false
-    t.string "ip_address"
-    t.string "user_agent"
     t.datetime "created_at", null: false
+    t.string "ip_address"
     t.datetime "updated_at", null: false
+    t.string "user_agent"
+    t.bigint "user_id", null: false
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
   create_table "users", force: :cascade do |t|
+    t.datetime "created_at", null: false
     t.string "email_address", null: false
     t.string "password_digest", null: false
-    t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
+  end
+
+  create_table "versions", force: :cascade do |t|
+    t.datetime "created_at"
+    t.string "event", null: false
+    t.bigint "item_id", null: false
+    t.string "item_type", null: false
+    t.text "object"
+    t.text "object_changes"
+    t.string "whodunnit"
+    t.index ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id"
   end
 
   add_foreign_key "bloomings", "plants"

@@ -20,7 +20,11 @@ Rails.application.routes.draw do
 
   resources :passwords, param: :token
 
-  resources :plants
+  resources :plants do
+    member do
+      get :history
+    end
+  end
 
   # request to get a CSRF token tied to its session cookie.
   get "/csrf_token", to: "csrf_tokens#show"

@@ -23,6 +23,23 @@ class PlantsController < ApplicationController
     end
   end
 
+  def history
+    @plant = Current.user.plants.find(params[:id])
+    @versions = @plant.versions
+    resp = @versions.map { |version|
+      {
+        event: version.event,
+        whodunnit: version.whodunnit,
+        changeset: version.changeset,
+        created_at: version.created_at
+      }
+    }
+    respond_to do |format|
+      format.html { render :history }
+      format.json { render json: resp.as_json }
+    end
+  end
+
   # GET /plants/new
   def new
     @plant = Current.user.plants.build

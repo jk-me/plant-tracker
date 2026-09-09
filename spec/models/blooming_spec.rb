@@ -1,5 +1,4 @@
 require 'rails_helper'
-require 'pry'
 
 RSpec.describe Blooming, type: :model do
   describe 'update plant last_update_date when modified' do

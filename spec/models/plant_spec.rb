@@ -20,4 +20,17 @@ RSpec.describe Plant, type: :model do
 
     expect(plant.reload.last_update_date).to be > old_last_update_date
   end
+
+  it "does not update last_update_date when only last_update_date is modified" do
+    plant = user.plants.create!(name: "Brassavola nodosa")
+    old_last_update_date = plant.last_update_date
+
+    travel 1.day do
+      plant.update_column(:last_update_date, Time.current)
+    end
+
+    expect(plant.versions.count).to eq(1)
+    expect(plant.versions.last.event).to eq('create')
+    expect(plant.reload.last_update_date).to be > old_last_update_date
+  end
 end
